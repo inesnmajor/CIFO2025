@@ -1,15 +1,4 @@
-from random import random
-def mutate_all(self, solution):
-        if random.random() < self.pm:
-            mutation = random.choice([
-                self.mutate_swap_between_teams,
-                self.mutate_global_position_permutation,
-                self.mutate_random_position_swap
-            ])
-            solution = mutation(solution)
-        return solution
-
-
+import random
 
 def mutate_swap_between_teams(self, solution):
     from copy import deepcopy
@@ -37,7 +26,7 @@ def mutate_swap_between_teams(self, solution):
 
     if t1.is_valid() and t2.is_valid():
         final_solution = solution.__class__(repr=new_repr)
-        if self.is_unique(final_solution):
+        if is_unique(final_solution):
             return final_solution
     return solution
     
@@ -60,7 +49,7 @@ def mutate_global_position_permutation(self, solution, position='DEF'):
 
     if all(team.is_valid() for team in new_repr):
         final_solution = solution.__class__(repr=new_repr)
-        if self.is_unique(final_solution):
+        if is_unique(final_solution):
             return final_solution
     return solution
 
@@ -83,11 +72,11 @@ def mutate_random_position_swap(self, solution):
 
     if new_repr[t1].is_valid() and new_repr[t2].is_valid():
         final_solution = solution.__class__(repr=new_repr)
-        if self.is_unique(final_solution):
+        if is_unique(final_solution):
             return final_solution
     return solution
 
 
-def is_unique(self, solution):
+def is_unique(solution):
     all_names = [p['Name'] for team in solution.repr for p in team.players]
     return len(all_names) == len(set(all_names))

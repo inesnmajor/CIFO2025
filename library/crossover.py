@@ -1,5 +1,5 @@
 import random
-from selection import FootballSolution, N_TEAMS
+from library.classes import FootballSolution, N_TEAMS
 
 def team_swap_crossover(self, p1, p2):
     point = random.randint(1, N_TEAMS - 1)

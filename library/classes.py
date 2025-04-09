@@ -3,14 +3,7 @@ from abc import ABC, abstractmethod
 import pandas as pd
 import numpy as np
 from copy import deepcopy
-
-players_df = pd.read_csv("players(in).csv")
-
-POSITIONS = ["GK", "DEF", "MID", "FWD"]
-TEAM_STRUCTURE = {"GK": 1, "DEF": 2, "MID": 2, "FWD": 2}
-TEAM_SIZE = 7
-N_TEAMS = 5
-MAX_BUDGET = 750
+from library.fixed_para import POSITIONS,TEAM_SIZE,TEAM_STRUCTURE,N_TEAMS, MAX_BUDGET,players_df
 
 class Solution(ABC):
     def __init__(self, repr=None):
@@ -48,6 +41,9 @@ class Team:
 
     def average_skill(self):
         return np.mean([p['Skill'] for p in self.players]) #average skill of each team
+    
+
+
 
 class FootballSolution(Solution):
     def __init__(self, repr=None, players_df=players_df):
