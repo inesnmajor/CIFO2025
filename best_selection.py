@@ -6,30 +6,6 @@ from library.classes import FootballSolution, Team
 import random
 import numpy as np
 
-def run_ga_test(selection_func, crossover_func, mutation_func, generations=30, pop_size=20):
-    population = [FootballSolution() for _ in range(pop_size)]
-
-    best_fitness_progress = []
-
-    for gen in range(generations):
-        new_population = []
-        for _ in range(pop_size // 2):
-            p1 = selection_func(population)
-            p2 = selection_func(population)
-
-            c1, c2 = crossover_func(None, p1, p2)
-
-            c1 = mutation_func(None, c1)
-            c2 = mutation_func(None, c2)
-
-            new_population.extend([c1, c2])
-
-        population = new_population
-        best_fitness = max(ind.fitness() for ind in population)
-        best_fitness_progress.append(best_fitness)
-
-    return best_fitness_progress, np.mean(best_fitness_progress[-5:])  # média das últimas 5 gerações
-
 # Combinações possíveis
 selection_methods = {
     "tournament": tournament_selection,
@@ -47,31 +23,64 @@ mutation_methods = {
     "between_teams": mutate_swap_between_teams
 }
 
-# Testar todas as combinações
+def run_ga_test(selection_func, crossover_func, mutation_func,
+                generations=30, pop_size=20, elitism=True, n_runs=30):
+    
+    final_best_fitnesses = []
+
+    for run in range(n_runs):
+        population = [FootballSolution() for _ in range(pop_size)]
+        
+        for gen in range(generations):
+            new_population = []
+
+            if elitism:
+                elite = max(population, key=lambda ind: ind.fitness()).deepcopy()
+
+            for _ in range(pop_size // 2):
+                p1 = selection_func(population)
+                p2 = selection_func(population)
+
+                c1, c2 = crossover_func(None, p1, p2)
+                c1 = mutation_func(None, c1)
+                c2 = mutation_func(None, c2)
+
+                new_population.extend([c1, c2])
+
+            if elitism:
+                worst_idx = min(range(len(new_population)), key=lambda i: new_population[i].fitness())
+                new_population[worst_idx] = elite
+
+            population = new_population
+
+        # 🔹 Guardar melhor fitness ao final da run
+        final_best = max(ind.fitness() for ind in population)
+        final_best_fitnesses.append(final_best)
+
+    # 🔸 Retorna a mediana dos 30 melhores fitness finais
+    return np.median(final_best_fitnesses), final_best_fitnesses
+
+
+
 results = []
 
-for sel_name, sel_func in selection_methods.items():
-    for cross_name, cross_func in crossover_methods.items():
-        for mut_name, mut_func in mutation_methods.items():
-            print(f"Testing {sel_name} | {cross_name} | {mut_name}")
-            fitness_prog, final_avg = run_ga_test(sel_func, cross_func, mut_func)
-            results.append({
-                "selection": sel_name,
-                "crossover": cross_name,
-                "mutation": mut_name,
-                "final_avg_fitness": final_avg
-            })
+for elitism_flag in [True, False]:
+    for sel_name, sel_func in selection_methods.items():
+        for cross_name, cross_func in crossover_methods.items():
+            for mut_name, mut_func in mutation_methods.items():
+                name = f"{sel_name}|{cross_name}|{mut_name}|elitism={elitism_flag}"
+                print(f"\nRunning {name} ...")
 
-# Mostrar resultados ordenados
-results.sort(key=lambda x: x["final_avg_fitness"], reverse=True)
+                median_final, all_finals = run_ga_test(
+                    sel_func, cross_func, mut_func, elitism=elitism_flag)
 
-print("\nMelhores combinações (ordenadas por média da fitness final):\n")
-print("{:<25} {:<20} {:<20} {:<10}".format("Selection", "Crossover", "Mutation", "Fitness"))
+                results.append((name, median_final))
 
-for res in results:
-    print("{:<25} {:<20} {:<20} {:.4f}".format(
-        res["selection"],
-        res["crossover"],
-        res["mutation"],
-        res["final_avg_fitness"]
-    ))
+
+print("\n📋 Mediana da fitness final (30 runs por combinação):\n")
+
+for name, median in sorted(results, key=lambda x: x[1], reverse=True):
+    print(f"{name:<60} -> {median:.4f}")
+
+
+

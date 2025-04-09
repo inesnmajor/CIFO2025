@@ -107,7 +107,7 @@ class FootballSolution(Solution):
                 continue  # fails, and trys again
 
         if len(teams) != N_TEAMS:
-            print("[INFO] Could not create enough valid teams. Retrying full generation...")
+            #print("[INFO] Could not create enough valid teams. Retrying full generation...")
             return self.random_initial_representation()
 
         return teams
