@@ -2,6 +2,7 @@ import random
 
 def mutate_swap_between_teams(self, solution):
     from copy import deepcopy
+    
     new_repr = deepcopy(solution.repr)
     team_indices = random.sample(range(len(new_repr)), 2)
     t1, t2 = new_repr[team_indices[0]], new_repr[team_indices[1]]
@@ -76,7 +77,7 @@ def mutate_random_position_swap(self, solution):
             return final_solution
     return solution
 
-
+#this function is another layer of protection from players being the same in various teams, just to be safe
 def is_unique(solution):
     all_names = [p['Name'] for team in solution.repr for p in team.players]
     return len(all_names) == len(set(all_names))

@@ -26,6 +26,9 @@ class Solution(ABC):
 class Team:
     def __init__(self, players):
         self.players = players
+    
+    def __str__(self):
+        return "\n".join([f"{p['Name']} - {p['Position']} - Skill: {p['Skill']} - Salary: {p['Salary (€M)']}M" for p in self.players])
 
     def is_valid(self):
         pos_count = {p: 0 for p in POSITIONS} #count players in each pos (start w/ 0)
@@ -42,15 +45,24 @@ class Team:
     def average_skill(self):
         return np.mean([p['Skill'] for p in self.players]) #average skill of each team
     
+    def __repr__(self):
+        return f"Team(avg_skill={self.average_skill():.2f}, valid={self.is_valid()})"
+    
+    def __len__(self):
+        return len(self.players)
+
+    def __getitem__(self, idx):
+        return self.players[idx]
 
 
+    
 
 class FootballSolution(Solution):
     def __init__(self, repr=None, players_df=players_df):
         self.players_df = players_df
         super().__init__(repr=repr)
 
-##por equanto,, por no is valid---
+    #this validates that the solution(5 instances of the class Team) is valid --ACHO QUE NAO ESTAMOS A USAR
     def _validate_repr(self, repr):
         if not isinstance(repr, list):
             raise TypeError("Representation must be a list of Team objects")
@@ -87,7 +99,7 @@ class FootballSolution(Solution):
         while len(teams) < N_TEAMS and attempts < max_attempts:
             attempts += 1
 
-            try:
+            try: #will build a league not allowing same players in different teams and respecting the team's structure
                 team_players = []
 
                 for pos, count in TEAM_STRUCTURE.items():
@@ -108,21 +120,18 @@ class FootballSolution(Solution):
 
         if len(teams) != N_TEAMS:
             #print("[INFO] Could not create enough valid teams. Retrying full generation...")
-            return self.random_initial_representation()
+            return self.random_initial_representation() #this ensures there is no invalid teams created during evolution
 
         return teams
 
 
 
     def fitness(self):
-        valid_teams = [team for team in self.repr if team.is_valid()]
-        if len(valid_teams) < 2:
-            return 0
-        skills = [team.average_skill() for team in valid_teams]
-        return 1 / (1 + np.std(skills)) #WE MUST USE THIS FUNCTION BC IF NOT THERE WILL BE PLAYERS IN MORE THAN 1 TEAM
-    
-   
+        if not all(team.is_valid() for team in self.repr):
+            return 0  #if any team is invalid, penalize it
 
-    #-----
-    def deepcopy(self):
-        return deepcopy(self)
+        skills = [team.average_skill() for team in self.repr]
+        return 1 / (1 + np.std(skills))
+    
+        
+   

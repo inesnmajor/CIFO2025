@@ -5,8 +5,9 @@ from library.classes import FootballSolution, Team
 
 import random
 import numpy as np
+from copy import deepcopy
 
-# Combinações possíveis
+# possible combinations
 selection_methods = {
     "tournament": tournament_selection,
     "fitness_proportionate": fitness_proportionate_selection
@@ -23,47 +24,64 @@ mutation_methods = {
     "between_teams": mutate_swap_between_teams
 }
 
+'''
+function to run tests for choosing the best selection algorithm
+we will run 30 times and take the median to evaluate the best selection algorithm 
+we will use 30 generations and population size of 20 to run this tests-- FOR NOW--
+'''
 def run_ga_test(selection_func, crossover_func, mutation_func,
-                generations=30, pop_size=20, elitism=True, n_runs=30):
+                generations=30, pop_size=20, elitism=True, n_runs=30,
+                crossover_prob=0.9, mutation_prob=0.3):
     
     final_best_fitnesses = []
 
     for run in range(n_runs):
-        population = [FootballSolution() for _ in range(pop_size)]
+        population = [FootballSolution() for _ in range(pop_size)] #create a population of solutions
         
         for gen in range(generations):
             new_population = []
 
             if elitism:
-                elite = max(population, key=lambda ind: ind.fitness()).deepcopy()
+                elite = deepcopy(max(population, key=lambda ind: ind.fitness()))
 
             for _ in range(pop_size // 2):
+                # selection of the parents
                 p1 = selection_func(population)
                 p2 = selection_func(population)
 
-                c1, c2 = crossover_func(None, p1, p2)
-                c1 = mutation_func(None, c1)
-                c2 = mutation_func(None, c2)
+                #crossover and creation of the offspring
+                if random.random() < crossover_prob:
+                    c1, c2 = crossover_func(None, p1, p2)
+                else:
+                    c1, c2 = deepcopy(p1), deepcopy(p2)
+
+                #mutation
+                if random.random() < mutation_prob:
+                    c1 = mutation_func(None, c1)
+                if random.random() < mutation_prob:
+                    c2 = mutation_func(None, c2)
 
                 new_population.extend([c1, c2])
 
-            if elitism:
+            if elitism: #takes the worst team of the population and puts the elite
                 worst_idx = min(range(len(new_population)), key=lambda i: new_population[i].fitness())
                 new_population[worst_idx] = elite
 
             population = new_population
 
-        # 🔹 Guardar melhor fitness ao final da run
+        # saves best fitness
         final_best = max(ind.fitness() for ind in population)
         final_best_fitnesses.append(final_best)
 
-    # 🔸 Retorna a mediana dos 30 melhores fitness finais
+    # median
     return np.median(final_best_fitnesses), final_best_fitnesses
 
 
 
 results = []
-
+'''
+loop of all possible combinations of elitism, selection algorithms, crossover, and mutations
+'''
 for elitism_flag in [True, False]:
     for sel_name, sel_func in selection_methods.items():
         for cross_name, cross_func in crossover_methods.items():
@@ -72,12 +90,16 @@ for elitism_flag in [True, False]:
                 print(f"\nRunning {name} ...")
 
                 median_final, all_finals = run_ga_test(
-                    sel_func, cross_func, mut_func, elitism=elitism_flag)
+                    sel_func, cross_func, mut_func,
+                    elitism=elitism_flag,
+                    crossover_prob=0.9,
+                    mutation_prob=0.1
+                )
 
                 results.append((name, median_final))
 
 
-print("\n📋 Mediana da fitness final (30 runs por combinação):\n")
+print("Median of final fitness: 30 runs per combination\n")
 
 for name, median in sorted(results, key=lambda x: x[1], reverse=True):
     print(f"{name:<60} -> {median:.4f}")
