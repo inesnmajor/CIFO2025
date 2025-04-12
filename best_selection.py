@@ -30,7 +30,7 @@ we will run 30 times and take the median to evaluate the best selection algorith
 we will use 30 generations and population size of 20 to run this tests-- FOR NOW--
 '''
 def run_ga_test(selection_func, crossover_func, mutation_func,
-                generations=30, pop_size=20, elitism=True, n_runs=30,
+                generations=30, pop_size=20, elitism=True, n_runs=15,
                 crossover_prob=0.9, mutation_prob=0.3):
     
     final_best_fitnesses = []
@@ -43,31 +43,28 @@ def run_ga_test(selection_func, crossover_func, mutation_func,
 
             if elitism:
                 elite = deepcopy(max(population, key=lambda ind: ind.fitness()))
+                new_population.append(elite)
 
-            for _ in range(pop_size // 2):
-                # selection of the parents
+            while len(new_population) < pop_size:
                 p1 = selection_func(population)
                 p2 = selection_func(population)
 
-                #crossover and creation of the offspring
                 if random.random() < crossover_prob:
                     c1, c2 = crossover_func(None, p1, p2)
                 else:
                     c1, c2 = deepcopy(p1), deepcopy(p2)
 
-                #mutation
                 if random.random() < mutation_prob:
                     c1 = mutation_func(None, c1)
                 if random.random() < mutation_prob:
                     c2 = mutation_func(None, c2)
 
-                new_population.extend([c1, c2])
-
-            if elitism: #takes the worst team of the population and puts the elite
-                worst_idx = min(range(len(new_population)), key=lambda i: new_population[i].fitness())
-                new_population[worst_idx] = elite
+                for child in [c1, c2]:
+                    if len(new_population) < pop_size:
+                        new_population.append(child)
 
             population = new_population
+
 
         # saves best fitness
         final_best = max(ind.fitness() for ind in population)
