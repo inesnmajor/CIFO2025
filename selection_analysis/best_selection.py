@@ -6,6 +6,9 @@ from library.classes import FootballSolution, Team
 import random
 import numpy as np
 from copy import deepcopy
+import csv
+import pandas as pd
+
 
 # possible combinations
 selection_methods = {
@@ -30,14 +33,15 @@ we will run 30 times and take the median to evaluate the best selection algorith
 we will use 30 generations and population size of 20 to run this tests-- FOR NOW--
 '''
 def run_ga_test(selection_func, crossover_func, mutation_func,
-                generations=30, pop_size=20, elitism=True, n_runs=15,
+                generations=100, pop_size=40, elitism=True, n_runs=30,
                 crossover_prob=0.9, mutation_prob=0.3):
-    
-    final_best_fitnesses = []
+
+    all_runs_best_per_gen = []  #each element will be a list of fitnesses per generation
 
     for run in range(n_runs):
-        population = [FootballSolution() for _ in range(pop_size)] #create a population of solutions
-        
+        population = [FootballSolution() for _ in range(pop_size)]
+        best_per_gen = []
+
         for gen in range(generations):
             new_population = []
 
@@ -65,20 +69,19 @@ def run_ga_test(selection_func, crossover_func, mutation_func,
 
             population = new_population
 
+            # keeps the best fitness of this gen
+            best_gen_fitness = max(ind.fitness() for ind in population)
+            best_per_gen.append(best_gen_fitness)
 
-        # saves best fitness
-        final_best = max(ind.fitness() for ind in population)
-        final_best_fitnesses.append(final_best)
+        all_runs_best_per_gen.append(best_per_gen)
 
-    # median
-    return np.median(final_best_fitnesses), final_best_fitnesses
+    return all_runs_best_per_gen  #list of lists
 
 
 
-results = []
-'''
-loop of all possible combinations of elitism, selection algorithms, crossover, and mutations
-'''
+
+results_df = pd.DataFrame()
+
 for elitism_flag in [True, False]:
     for sel_name, sel_func in selection_methods.items():
         for cross_name, cross_func in crossover_methods.items():
@@ -86,20 +89,27 @@ for elitism_flag in [True, False]:
                 name = f"{sel_name}|{cross_name}|{mut_name}|elitism={elitism_flag}"
                 print(f"\nRunning {name} ...")
 
-                median_final, all_finals = run_ga_test(
+                all_runs = run_ga_test(
                     sel_func, cross_func, mut_func,
+                    generations=100,
+                    pop_size=40,
+                    n_runs=30,
                     elitism=elitism_flag,
                     crossover_prob=0.9,
                     mutation_prob=0.1
                 )
 
-                results.append((name, median_final))
+                #all_runs is a list of 30 lists, one per run
+                medians = np.median(np.transpose(all_runs), axis=1)
+
+                results_df[name] = medians
+
+# saves the csv file
+results_df.to_csv("ga_selection_analysis.csv", index_label="Generation")
+
+print("\nResultados salvos em 'ga_selection_analysis.csv'")
 
 
-print("Median of final fitness: 30 runs per combination\n")
-
-for name, median in sorted(results, key=lambda x: x[1], reverse=True):
-    print(f"{name:<60} -> {median:.4f}")
 
 
 
