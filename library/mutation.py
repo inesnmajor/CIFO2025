@@ -139,7 +139,8 @@ def is_unique(solution):
 
 # Exemplo para testar mutações numa solução
 import random
-from library.classes import FootballSolution
+from classes import FootballSolution
+from fixed_para import POSITIONS,TEAM_SIZE,TEAM_STRUCTURE,N_TEAMS, MAX_BUDGET,players_df
 
 def print_league(solution):
     for i, team in enumerate(solution.repr):
