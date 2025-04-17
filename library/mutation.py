@@ -137,45 +137,4 @@ def is_unique(solution):
     return len(all_names) == len(set(all_names))
 
 
-# Exemplo para testar mutações numa solução
-import random
-from library.classes import *
-from library.fixed_para import *
 
-def print_league(solution):
-    for i, team in enumerate(solution.repr):
-        print(f"\nTeam {i + 1}:")
-        for player in team.players:
-            print(f"  {player['Name']} - {player['Position']} - Skill: {player['Skill']} - Cost: {player['Cost']}M")
-    print("\n---")
-
-def test_mutations(initial_solution, mutation_functions):
-    print("=== LIGA ORIGINAL ===")
-    print_league(initial_solution)
-
-    for mutate in mutation_functions:
-        print(f"\n==> Aplicando mutação: {mutate.__name__}")
-        mutated = mutate(None, initial_solution)  # passa None se as mutações estiverem num class e não forem estáticas
-
-        if mutated is initial_solution:
-            print("  Nenhuma alteração feita (mutação não aplicada).")
-        else:
-            print_league(mutated)
-
-        # Validar a nova liga
-        if all(team.is_valid() for team in mutated.repr):
-            print("  ✅ Liga válida após mutação.")
-        else:
-            print("  ❌ Liga inválida após mutação!")
-
-# Exemplo de uso
-mutation_functions = [
-    mutate_swap_between_teams,
-    mutate_global_position_permutation,
-    mutate_random_position_swap
-]
-
-# Supondo que já tens uma função que gera uma solução válida
-initial_solution = FootballSolution() # <- precisas de ter essa função ou construir manualmente
-
-test_mutations(initial_solution, mutation_functions)

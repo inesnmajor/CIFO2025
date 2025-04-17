@@ -32,6 +32,7 @@ function to run tests for choosing the best selection algorithm
 we will run 30 times and take the median to evaluate the best selection algorithm 
 we will use 30 generations and population size of 20 to run this tests-- FOR NOW--
 '''
+
 def run_ga_test(selection_func, crossover_func, mutation_func,
                 generations=100, pop_size=40, elitism=True, n_runs=30,
                 crossover_prob=0.9, mutation_prob=0.3):
@@ -96,7 +97,8 @@ for elitism_flag in [True, False]:
                     n_runs=30,
                     elitism=elitism_flag,
                     crossover_prob=0.9,
-                    mutation_prob=0.1
+                    mutation_prob=0.1,
+                    print_league_per_gen=True
                 )
 
                 #all_runs is a list of 30 lists, one per run
