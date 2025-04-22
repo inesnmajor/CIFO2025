@@ -26,10 +26,31 @@ class Solution(ABC):
 class Team:
     def __init__(self, players):
         self.players = players
-    
-    def __str__(self):
-        return "\n".join([f"{p['Name']} - {p['Position']} - Skill: {p['Skill']} - Salary: {p['Salary (€M)']}M" for p in self.players])
 
+    def __str__(self):
+        header = f"{'Player':<20} {'Position':<10} {'Skill':<6} {'Salary (€M)':<10}"
+        lines = [header, "-" * len(header)]
+        for p in self.players:
+            line = f"{p['Name']:<20} {p['Position']:<10} {p['Skill']:<6.1f} {p['Salary (€M)']:<10.1f}"
+            lines.append(line)
+        summary = f"\nAverage Skill: {self.average_skill():.2f} | Total Salary: {self.total_salary():.2f}M | Valid: {self.is_valid()}"
+        return "\n".join(lines) + summary
+
+    def __repr__(self):
+        header = f"{'Player':<20} {'Position':<10} {'Skill':<6} {'Salary (€M)':<10}"
+        lines = [header, "-" * len(header)]
+        for p in self.players:
+            line = f"{p['Name']:<20} {p['Position']:<10} {p['Skill']:<6.1f} {p['Salary (€M)']:<10.1f}"
+            lines.append(line)
+        summary = f"\nAverage Skill: {self.average_skill():.2f} | Total Salary: {self.total_salary():.2f}M | Valid: {self.is_valid()}"
+        return "\n".join(lines) + summary
+
+    def __len__(self):
+        return len(self.players)
+
+    def __getitem__(self, idx):
+        return self.players[idx]
+    
     def is_valid(self):
         pos_count = {p: 0 for p in POSITIONS} #count players in each pos (start w/ 0)
         total_cost = 0
@@ -43,16 +64,10 @@ class Team:
         return True
 
     def average_skill(self):
-        return np.mean([p['Skill'] for p in self.players]) #average skill of each team
-    
-    def __repr__(self):
-        return f"Team(avg_skill={self.average_skill():.2f}, valid={self.is_valid()})"
-    
-    def __len__(self):
-        return len(self.players)
+        return np.mean([p['Skill'] for p in self.players])
 
-    def __getitem__(self, idx):
-        return self.players[idx]
+    def total_salary(self):
+        return sum(p['Salary (€M)'] for p in self.players)
 
 
     
@@ -61,6 +76,17 @@ class FootballSolution(Solution):
     def __init__(self, repr=None, players_df=players_df):
         self.players_df = players_df
         super().__init__(repr=repr)
+    
+    def __repr__(self):
+        summary = f"\n===== FootballSolution =====\n"
+        for idx, team in enumerate(self.repr, 1):
+            summary += f"\n--- Team {idx} ---\n"
+            for player in team.players:
+                summary += (f"{player['Name']:<25} | {player['Position']:<3} | "
+                            f"Skill: {player['Skill']:<5.1f} | €{player['Salary (€M)']:<6.1f}M\n")
+        summary += f"\nFitness: {self.fitness():.4f}\n"
+        return summary
+
 
     #this validates that the solution(5 instances of the class Team) is valid --ACHO QUE NAO ESTAMOS A USAR
     def _validate_repr(self, repr):
@@ -125,7 +151,6 @@ class FootballSolution(Solution):
         return teams
 
 
-
     def fitness(self):
         if not all(team.is_valid() for team in self.repr):
             return 0  #if any team is invalid, penalize it
@@ -133,5 +158,4 @@ class FootballSolution(Solution):
         skills = [team.average_skill() for team in self.repr]
         return 1 / (1 + np.std(skills))
     
-        
-   
+
