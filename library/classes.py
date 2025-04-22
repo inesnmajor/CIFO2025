@@ -94,7 +94,7 @@ class FootballSolution(Solution):
         used_names = set()
 
         attempts = 0
-        max_attempts = 100  # security for infinite loops
+        max_attempts = 100  # security for infinite loops VER ISTOO
 
         while len(teams) < N_TEAMS and attempts < max_attempts:
             attempts += 1
