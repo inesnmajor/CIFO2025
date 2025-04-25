@@ -1,5 +1,5 @@
 from library.classes import FootballSolution
-from library.crossover import crossover_by_team_with_repair  # ou crossover_by_position
+from library.crossover import crossover_teamwise_mix_and_repair,crossover_by_team_with_repair
 from library.mutation import mutate_swap_between_teams  # escolhe a tua mutação
 from library.selection import tournament_selection
 import random

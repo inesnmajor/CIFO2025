@@ -62,7 +62,7 @@ def crossover_by_team_with_repair(p1: FootballSolution, p2: FootballSolution) ->
             ]
 
             for _ in range(5):  # attempt up to 5 replacements per team
-                most_expensive = max(team.players, key=lambda p: p['Salary (€M)'])
+                most_expensive = max(team.players, key=lambda p: float(p['Salary (€M)']))
                 pos = most_expensive['Position']
 
                 # Find cheaper candidates with the same position
@@ -72,7 +72,8 @@ def crossover_by_team_with_repair(p1: FootballSolution, p2: FootballSolution) ->
                     break  # no cheaper replacement found
 
                 replacement = random.choice(cheaper_candidates)
-                team.players.remove(most_expensive)
+                team.players = [p for p in team.players if p['Name'] != most_expensive['Name']]
+
                 team.players.append(replacement)
 
                 available_players.remove(replacement)
@@ -147,13 +148,13 @@ def crossover_teamwise_mix_and_repair(p1: FootballSolution, p2: FootballSolution
     for team in offspring_teams:
         while team.total_salary() > MAX_BUDGET:
             # Find the most expensive player in the team
-            most_expensive_player = max(team.players, key=lambda p: p['Salary (€M)'])
-            pos = most_expensive_player['Position']
+            most_expensive = max(team.players, key=lambda p: float(p['Salary (€M)']))
+            pos = most_expensive['Position']
 
             # Find cheaper candidates for the same position from the available dataset
             candidates = players_df[(players_df['Position'] == pos) &
                                     (~players_df['Name'].isin([p['Name'] for p in team.players])) &
-                                    (players_df['Salary (€M)'] < most_expensive_player['Salary (€M)'])]
+                                    (players_df['Salary (€M)'] < most_expensive['Salary (€M)'])]
 
             if candidates.empty:
                 # No cheaper replacement found, cannot repair further
@@ -161,7 +162,7 @@ def crossover_teamwise_mix_and_repair(p1: FootballSolution, p2: FootballSolution
 
             # Replace with the cheapest candidate available
             cheapest_candidate = candidates.sort_values('Salary (€M)').iloc[0].to_dict()
-            team.players.remove(most_expensive_player)
+            team.players = [p for p in team.players if p['Name'] != most_expensive['Name']]
             team.players.append(cheapest_candidate)
 
     # Step 5: Final validation
