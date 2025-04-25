@@ -44,3 +44,57 @@ for gen in range(N_GENERATIONS):
 best = max(population, key=lambda sol: sol.fitness())
 print("\n===== Best League Configuration =====")
 print(best)
+
+
+#------------------------------------------------
+#------------------------------------------------
+#                   Rodrigo
+#------------------------------------------------
+#------------------------------------------------
+
+
+# from library.constraints import *
+# from library.crossover import *
+
+# #crossover_by_team_with_repair
+# #crossover_teamwise_mix_and_repair
+
+# # # Evolução
+# for gen in range(N_GENERATIONS):
+#     new_population = []
+
+#     # Elitismo: manter os melhores
+#     population.sort(key=lambda sol: sol.fitness(), reverse=True)
+#     new_population.extend(population[:ELITE_SIZE])
+
+#     # Gerar o resto da nova população
+#     while len(new_population) < POP_SIZE:
+#         # Seleção
+#         parent1 = tournament_selection(population, k=3)
+#         parent2 = tournament_selection(population, k=3)
+
+#         # Crossover
+#         child = crossover_teamwise_mix_and_repair(parent1, parent2)
+#         print(f"\n[DEBUG] Geração {gen+1} | Filho após crossover:")
+#         check_no_duplicates(child)
+#         check_team_size(child)
+#         check_budget(child)
+
+#         # Mutação
+#         if random.random() < MUTATION_RATE:
+#             child = mutate_swap_between_teams(None, child)
+#             print(f"\n[DEBUG] Geração {gen+1} | Filho após mutação:")
+#             check_no_duplicates(child)
+#             check_team_size(child)
+#             check_budget(child)
+
+#         new_population.append(child)
+
+#     population = new_population
+#     best_fitness = max(ind.fitness() for ind in population)
+#     print(f"Generation {gen+1} | Best fitness: {best_fitness:.4f}")
+
+# # Melhor solução final
+# best = max(population, key=lambda sol: sol.fitness())
+# print("\n===== Best League Configuration =====")
+# print(best)

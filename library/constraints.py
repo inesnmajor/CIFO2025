@@ -29,7 +29,7 @@ def check_team_size(solution, expected_size=7):
             raise SystemExit("Execução terminada devido a violação do tamanho da equipa.")
     return True
 
-def check_budget(solution, max_budget=700):
+def check_budget(solution, max_budget=750):
     for i, team in enumerate(solution.repr):
         total_salary = sum(player["Salary (€M)"] for player in team.players)
         if total_salary > max_budget:
