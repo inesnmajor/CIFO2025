@@ -59,8 +59,8 @@ class Team:
             total_cost += player['Salary (€M)'] #and sums their salary
         if any(pos_count[p] != TEAM_STRUCTURE[p] for p in POSITIONS):
             return False  #if any pos doesn't have exacly the right nº of players, its invalid
-        if total_cost > MAX_BUDGET:
-            return False  #if exceeds the budget, its false
+        # if total_cost > MAX_BUDGET:
+        #     return False  #if exceeds the budget, its false
         return True
 
     def average_skill(self):
@@ -152,10 +152,15 @@ class FootballSolution(Solution):
 
 
     def fitness(self):
-        if not all(team.is_valid() for team in self.repr):
-            return 0  #if any team is invalid, penalize it
+        if not all(len(team.players) == TEAM_SIZE and
+                sum(1 for p in team.players if p['Position'] == pos) == TEAM_STRUCTURE[pos]
+                for team in self.repr for pos in POSITIONS):
+            return 0  # structural invalidity
+
+        if any(team.total_salary() > MAX_BUDGET for team in self.repr):
+            return 0.001  # hard penalty for budget violations
 
         skills = [team.average_skill() for team in self.repr]
         return 1 / (1 + np.std(skills))
-    
+
 

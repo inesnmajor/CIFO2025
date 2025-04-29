@@ -6,7 +6,7 @@ import random
 
 # Configurações
 POP_SIZE = 20
-N_GENERATIONS = 30
+N_GENERATIONS = 50
 ELITE_SIZE = 1
 MUTATION_RATE = 0.2
 
@@ -28,7 +28,7 @@ for gen in range(N_GENERATIONS):
         parent2 = tournament_selection(population, k=3)
 
         # Crossover
-        child = crossover_by_team_with_repair(parent1, parent2)
+        child = crossover_teamwise_mix_and_repair(parent1, parent2)
 
         # Mutação
         if random.random() < MUTATION_RATE:

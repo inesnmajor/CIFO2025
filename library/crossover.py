@@ -92,13 +92,14 @@ def crossover_by_team_with_repair(p1: FootballSolution, p2: FootballSolution) ->
 
 def crossover_teamwise_mix_and_repair(p1: FootballSolution, p2: FootballSolution) -> FootballSolution:
     """
-    Team-wise crossover: mix players from parents, repair duplicates, 
-    and fix teams that exceed the budget by replacing expensive players.
+    Team-wise crossover: mixes players team by team from each parent,
+    repairs duplicates and fills missing slots, without forcing budget compliance.
+    Overbudget teams are allowed but will receive low fitness.
     """
     offspring_teams = []
     used_names = set()
 
-    # Step 1: Mix players team by team
+    # Step 1: Mix players from each team (half from each parent)
     for i in range(N_TEAMS):
         team1_players = deepcopy(p1.repr[i].players)
         team2_players = deepcopy(p2.repr[i].players)
@@ -111,7 +112,7 @@ def crossover_teamwise_mix_and_repair(p1: FootballSolution, p2: FootballSolution
         offspring_teams.append(Team(team_players))
         used_names.update(p['Name'] for p in team_players)
 
-    # Step 2: Detect and remove duplicate players
+    # Step 2: Remove duplicate players (only keep first occurrence)
     all_players = [p['Name'] for team in offspring_teams for p in team.players]
     name_counts = Counter(all_players)
     duplicates = [name for name, count in name_counts.items() if count > 1]
@@ -129,7 +130,7 @@ def crossover_teamwise_mix_and_repair(p1: FootballSolution, p2: FootballSolution
                     new_players.append(p)
             team.players = new_players
 
-    # Step 3: Fill missing players
+    # Step 3: Fill missing players to reach 7 per team and correct position structure
     name_to_player = {p['Name']: p for _, p in players_df.iterrows()}
     all_names = set(players_df['Name'])
     all_used = {p['Name'] for team in offspring_teams for p in team.players}
@@ -144,32 +145,9 @@ def crossover_teamwise_mix_and_repair(p1: FootballSolution, p2: FootballSolution
                 team.players.append(player)
                 break
 
-    # Step 4: Repair overbudget teams
-    for team in offspring_teams:
-        while team.total_salary() > MAX_BUDGET:
-            # Find the most expensive player in the team
-            most_expensive = max(team.players, key=lambda p: float(p['Salary (€M)']))
-            pos = most_expensive['Position']
+    # Step 4: Return offspring as-is (even if overbudget)
+    return FootballSolution(offspring_teams, players_df)
 
-            # Find cheaper candidates for the same position from the available dataset
-            candidates = players_df[(players_df['Position'] == pos) &
-                                    (~players_df['Name'].isin([p['Name'] for p in team.players])) &
-                                    (players_df['Salary (€M)'] < most_expensive['Salary (€M)'])]
-
-            if candidates.empty:
-                # No cheaper replacement found, cannot repair further
-                break
-
-            # Replace with the cheapest candidate available
-            cheapest_candidate = candidates.sort_values('Salary (€M)').iloc[0].to_dict()
-            team.players = [p for p in team.players if p['Name'] != most_expensive['Name']]
-            team.players.append(cheapest_candidate)
-
-    # Step 5: Final validation
-    if all(team.is_valid() for team in offspring_teams):
-        return FootballSolution(offspring_teams, players_df)
-    else:
-        return deepcopy(p1)
 
 
 
