@@ -38,6 +38,19 @@ def check_budget(solution, max_budget=750):
             raise SystemExit("Execução terminada devido a violação do orçamento.")
     return True
 
+def check_team_structure(solution):
+    expected_structure = {'GK': 1, 'DEF': 2, 'MID': 2, 'FWD': 2}
+    for i, team in enumerate(solution.repr):
+        position_counts = Counter(player['Position'] for player in team.players)
+        for pos, expected_count in expected_structure.items():
+            actual_count = position_counts.get(pos, 0)
+            if actual_count != expected_count:
+                print(f"[❌ Violação] Equipa {i+1} tem {actual_count} jogadores na posição {pos} (esperado: {expected_count})")
+                print_solution(f"Estado da Equipa {i+1}", solution)
+                raise SystemExit("Execução terminada devido a violação da estrutura da equipa.")
+    return True
+
+
 
 
 

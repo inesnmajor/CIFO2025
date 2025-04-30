@@ -3,8 +3,9 @@ from library.crossover import crossover_teamwise_mix_and_repair,crossover_by_tea
 from library.mutation import mutate_swap_between_teams  # escolhe a tua mutação
 from library.selection import tournament_selection
 import random
+import numpy as np
 
-# Configurações
+# # Configurações
 POP_SIZE = 20
 N_GENERATIONS = 50
 ELITE_SIZE = 1
@@ -46,6 +47,10 @@ print("\n===== Best League Configuration =====")
 print(best)
 
 
+
+
+
+
 #------------------------------------------------
 #------------------------------------------------
 #                   Rodrigo
@@ -58,6 +63,15 @@ print(best)
 
 # #crossover_by_team_with_repair
 # #crossover_teamwise_mix_and_repair
+
+# # # Configurações
+# POP_SIZE = 19
+# N_GENERATIONS = 3
+# ELITE_SIZE = 1
+# MUTATION_RATE = 0.2
+
+# # Inicialização da população
+# population = [FootballSolution() for _ in range(POP_SIZE)]
 
 # # # Evolução
 # for gen in range(N_GENERATIONS):
@@ -74,11 +88,12 @@ print(best)
 #         parent2 = tournament_selection(population, k=3)
 
 #         # Crossover
-#         child = crossover_teamwise_mix_and_repair(parent1, parent2)
+#         child = crossover_position_based_explained(parent1, parent2)
 #         print(f"\n[DEBUG] Geração {gen+1} | Filho após crossover:")
 #         check_no_duplicates(child)
 #         check_team_size(child)
-#         check_budget(child)
+#         # check_budget(child)
+#         check_team_structure(child)
 
 #         # Mutação
 #         if random.random() < MUTATION_RATE:
@@ -86,10 +101,15 @@ print(best)
 #             print(f"\n[DEBUG] Geração {gen+1} | Filho após mutação:")
 #             check_no_duplicates(child)
 #             check_team_size(child)
-#             check_budget(child)
+#             # check_budget(child)
+#             check_team_structure(child)
 
 #         new_population.append(child)
 
+#     check_no_duplicates(child)
+#     check_team_size(child)
+#     # check_budget(child)
+#     check_team_structure(child)
 #     population = new_population
 #     best_fitness = max(ind.fitness() for ind in population)
 #     print(f"Generation {gen+1} | Best fitness: {best_fitness:.4f}")

@@ -151,16 +151,38 @@ class FootballSolution(Solution):
         return teams
 
 
+    # def fitness(self):
+    #     if not all(len(team.players) == TEAM_SIZE and
+    #             sum(1 for p in team.players if p['Position'] == pos) == TEAM_STRUCTURE[pos]
+    #             for team in self.repr for pos in POSITIONS):
+    #         return 0  # structural invalidity
+
+    #     if any(team.total_salary() > MAX_BUDGET for team in self.repr):
+    #         return 0.001  # hard penalty for budget violations
+
+    #     skills = [team.average_skill() for team in self.repr]
+    #     return 1 / (1 + np.std(skills))
+
     def fitness(self):
+    # 1. Verificar se todas as equipas têm estrutura correta
         if not all(len(team.players) == TEAM_SIZE and
                 sum(1 for p in team.players if p['Position'] == pos) == TEAM_STRUCTURE[pos]
                 for team in self.repr for pos in POSITIONS):
-            return 0  # structural invalidity
+            return 0  # penalização total se estrutura estiver errada
 
-        if any(team.total_salary() > MAX_BUDGET for team in self.repr):
-            return 0.001  # hard penalty for budget violations
+        # 2. Penalização proporcional ao excesso de orçamento
+        penalty = 0
+        for team in self.repr:
+            excess = team.total_salary() - MAX_BUDGET
+            if excess > 0:
+                penalty += excess * 0.5  # podes ajustar este peso
 
+        # 3. Métrica de equilíbrio: menor desvio padrão das skills médias entre equipas
         skills = [team.average_skill() for team in self.repr]
-        return 1 / (1 + np.std(skills))
+        base_score = 1 / (1 + np.std(skills))  # quanto mais equilibradas, melhor
+
+        # 4. Fitness final com penalização orçamental
+        return max(0.001, base_score - penalty)
+
 
 
