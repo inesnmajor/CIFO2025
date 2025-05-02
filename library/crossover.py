@@ -505,3 +505,160 @@ def crossover_position_based_explained(p1: FootballSolution, p2: FootballSolutio
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+def crossover_blockwise_teams(p1: FootballSolution, p2: FootballSolution) -> FootballSolution:
+    """
+    Crossover por blocos de equipas:
+    - Seleciona aleatoriamente quantas equipas herdar de p1 e p2 (ex: 3 de um, 2 do outro).
+    - Resolve duplicados caso existam.
+    - Garante estrutura válida.
+    """
+    from copy import deepcopy
+
+    name_to_player = {p['Name']: p for _, p in players_df.iterrows()}
+    all_names = set(name_to_player.keys())
+    used_names = set()
+    offspring_teams = []
+
+    # Escolher quantas equipas vêm de cada pai (ex: 3 do p1, 2 do p2)
+    n_from_p1 = random.randint(2, 3)
+    p1_indices = random.sample(range(N_TEAMS), n_from_p1)
+    p2_indices = [i for i in range(N_TEAMS) if i not in p1_indices]
+
+    print(f"\n[DEBUG] Equipas herdadas: {n_from_p1} do p1 → {p1_indices} | {N_TEAMS - n_from_p1} do p2 → {p2_indices}")
+
+    # Herdar equipas do p1
+    for i in p1_indices:
+        team_players = deepcopy(p1.repr[i].players)
+        offspring_teams.append(Team(team_players))
+        used_names.update(p['Name'] for p in team_players)
+
+    # Herdar equipas do p2
+    for i in p2_indices:
+        team_players = []
+        for p in p2.repr[i].players:
+            if p['Name'] not in used_names:
+                team_players.append(deepcopy(p))
+                used_names.add(p['Name'])
+
+        # Completar equipa se tiver duplicados removidos
+        if len(team_players) < TEAM_SIZE:
+            positions_needed = Counter(TEAM_STRUCTURE)
+            for p in team_players:
+                positions_needed[p['Position']] -= 1
+
+            for pos, count in positions_needed.items():
+                available = [name_to_player[n] for n in all_names - used_names if name_to_player[n]['Position'] == pos]
+                random.shuffle(available)
+                team_players.extend(available[:count])
+                used_names.update(p['Name'] for p in available[:count])
+
+        offspring_teams.append(Team(team_players))
+
+    print("[DEBUG] Solução gerada com crossover_blockwise_teams (sem duplicados, estrutura respeitada).")
+    return FootballSolution(offspring_teams, players_df)
+
+
+
+
+def crossover_blockwise_teams_explained(p1: FootballSolution, p2: FootballSolution) -> FootballSolution:
+    """
+    Crossover por blocos com explicações passo a passo:
+    - Copia equipas inteiras dos pais.
+    - Resolve duplicados entre equipas herdadas.
+    - Garante estrutura válida com fallback ao dataset.
+    """
+    from copy import deepcopy
+
+    expected_structure = {'GK': 1, 'DEF': 2, 'MID': 2, 'FWD': 2}
+    name_to_player = {p['Name']: p for _, p in players_df.iterrows()}
+    all_names = set(name_to_player.keys())
+    used_names = set()
+    offspring_teams = []
+
+    print("\n===== [INÍCIO] Crossover por blocos de equipas =====")
+    print("- Vai copiar equipas inteiras dos pais.")
+    print("- Vai garantir que não há jogadores repetidos.")
+    print("- Se necessário, vai completar equipas com jogadores do dataset.")
+
+    # Escolher quantas equipas vêm do pai 1
+    n_from_p1 = random.randint(2, 3)
+    p1_indices = random.sample(range(N_TEAMS), n_from_p1)
+    p2_indices = [i for i in range(N_TEAMS) if i not in p1_indices]
+
+    print(f"\n🎲 Equipas herdadas: {n_from_p1} do p1 → {p1_indices} | {N_TEAMS - n_from_p1} do p2 → {p2_indices}")
+
+    # Copiar equipas do p1
+    for idx in p1_indices:
+        print(f"\n🧬 A copiar equipa {idx+1} do p1...")
+        team_players = deepcopy(p1.repr[idx].players)
+        print(f"  - Jogadores originais: {[p['Name'] for p in team_players]}")
+        offspring_teams.append(Team(team_players))
+        used_names.update(p['Name'] for p in team_players)
+
+    # Copiar equipas do p2
+    for idx in p2_indices:
+        print(f"\n🧬 A copiar equipa {idx+1} do p2...")
+        raw_players = deepcopy(p2.repr[idx].players)
+        team_players = []
+        for p in raw_players:
+            if p['Name'] in used_names:
+                print(f"    ⛔ {p['Name']} já foi usado noutra equipa — ignorado")
+            else:
+                print(f"    ✅ {p['Name']} copiado do p2")
+                team_players.append(p)
+                used_names.add(p['Name'])
+
+        # Corrigir equipa incompleta com jogadores do dataset
+        if len(team_players) < TEAM_SIZE:
+            print(f"    ⚠️ Equipa incompleta (tem {len(team_players)} jogadores), a preencher...")
+            # Contar quantos de cada posição faltam
+            pos_counts = Counter(p['Position'] for p in team_players)
+            pos_missing = {pos: expected_structure[pos] - pos_counts.get(pos, 0) for pos in expected_structure}
+            for pos, count in pos_missing.items():
+                if count > 0:
+                    available = [name_to_player[n] for n in all_names - used_names if name_to_player[n]['Position'] == pos]
+                    random.shuffle(available)
+                    for p in available[:count]:
+                        print(f"    🟡 {p['Name']} ({p['Position']}) adicionado do dataset")
+                        team_players.append(p)
+                        used_names.add(p['Name'])
+
+        # Adicionar equipa corrigida
+        print(f"  ✅ Equipa final criada com: {[p['Name'] for p in team_players]}")
+        offspring_teams.append(Team(team_players))
+
+    print("\n===== [FINAL] Solução construída com 5 equipas =====")
+    print(f"Número total de jogadores únicos: {len(used_names)} (esperado: {N_TEAMS * TEAM_SIZE})")
+
+    return FootballSolution(offspring_teams, players_df)
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------
