@@ -219,7 +219,7 @@ def crossover_position_based(p1: FootballSolution, p2: FootballSolution) -> Foot
     offspring_teams = []
     used_names = set()  # <- GLOBAL agora
 
-    print("\n[DEBUG] STEP 1: Structured position-wise selection")
+    #print("\n[DEBUG] STEP 1: Structured position-wise selection")
 
     for team_idx in range(N_TEAMS):
         team_players = []
@@ -261,7 +261,7 @@ def crossover_position_based(p1: FootballSolution, p2: FootballSolution) -> Foot
             team_players.extend(selected)
 
         offspring_teams.append(Team(team_players))
-        print(f"Team {team_idx} created with {[p['Position'] for p in team_players]}")
+        #print(f"Team {team_idx} created with {[p['Position'] for p in team_players]}")
 
     return FootballSolution(offspring_teams, players_df)
 

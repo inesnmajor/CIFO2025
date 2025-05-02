@@ -1,5 +1,5 @@
 from library.classes import FootballSolution
-from library.crossover import crossover_teamwise_mix_and_repair,crossover_by_team_with_repair
+from library.crossover import crossover_teamwise_mix_and_repair,crossover_position_based
 from library.mutation import mutate_swap_between_teams  # escolhe a tua mutação
 from library.selection import tournament_selection
 import random
@@ -29,7 +29,7 @@ for gen in range(N_GENERATIONS):
         parent2 = tournament_selection(population, k=3)
 
         # Crossover
-        child = crossover_teamwise_mix_and_repair(parent1, parent2)
+        child = crossover_position_based(parent1, parent2)
 
         # Mutação
         if random.random() < MUTATION_RATE:

@@ -88,7 +88,7 @@ class FootballSolution(Solution):
         return summary
 
 
-    #this validates that the solution(5 instances of the class Team) is valid --ACHO QUE NAO ESTAMOS A USAR
+    #this validates that the solution(5 instances of the class Team) is valid 
     def _validate_repr(self, repr):
         if not isinstance(repr, list):
             raise TypeError("Representation must be a list of Team objects")
@@ -102,51 +102,42 @@ class FootballSolution(Solution):
 
     
     def random_initial_representation(self):
-        #initial available players
         all_players = self.players_df.to_dict('records')
-        random.shuffle(all_players) #shuffle players
+        random.shuffle(all_players)
 
-        # group players by position
+        # group players by their position
         by_position = {pos: [] for pos in POSITIONS}
         for p in all_players:
             if p['Position'] in by_position:
                 by_position[p['Position']].append(p)
-
-        # shuffle each group of positions
+        #shuffle each position group to randomize selection within positions
         for pos_list in by_position.values():
             random.shuffle(pos_list)
 
         teams = []
         used_names = set()
 
-        attempts = 0
-        max_attempts = 100  # security for infinite loops VER ISTOO
-
-        while len(teams) < N_TEAMS and attempts < max_attempts:
-            attempts += 1
-
-            try: #will build a league not allowing same players in different teams and respecting the team's structure
+        while len(teams) < N_TEAMS:
+            try:
                 team_players = []
-
+                # for each required position, select the needed number of available players
                 for pos, count in TEAM_STRUCTURE.items():
-                    # filters for non used players
+                    #only not used players
                     available = [p for p in by_position[pos] if p['Name'] not in used_names]
                     if len(available) < count:
-                        raise ValueError("Not enough players left for position:", pos)
-                    team_players.extend(random.sample(available, count))  # picks the players
+                        raise ValueError(f"Not enough players left for position: {pos}")
+                    team_players.extend(random.sample(available, count))
 
                 team = Team(team_players)
 
                 if team.is_valid():
                     teams.append(team)
+                    #mark these players as used
                     used_names.update(p['Name'] for p in team_players)
 
-            except Exception as e:
-                continue  # fails, and trys again
-
-        if len(teams) != N_TEAMS:
-            #print("[INFO] Could not create enough valid teams. Retrying full generation...")
-            return self.random_initial_representation() #this ensures there is no invalid teams created during evolution
+            except Exception:
+                #if smth is wrong retry
+                continue
 
         return teams
 
@@ -163,26 +154,44 @@ class FootballSolution(Solution):
     #     skills = [team.average_skill() for team in self.repr]
     #     return 1 / (1 + np.std(skills))
 
-    def fitness(self):
-    # 1. Verificar se todas as equipas têm estrutura correta
-        if not all(len(team.players) == TEAM_SIZE and
-                sum(1 for p in team.players if p['Position'] == pos) == TEAM_STRUCTURE[pos]
-                for team in self.repr for pos in POSITIONS):
-            return 0  # penalização total se estrutura estiver errada
+    # def fitness(self):
+    # # 1. Verificar se todas as equipas têm estrutura correta
+    #     if not all(len(team.players) == TEAM_SIZE and
+    #             sum(1 for p in team.players if p['Position'] == pos) == TEAM_STRUCTURE[pos]
+    #             for team in self.repr for pos in POSITIONS):
+    #         return 0  # penalização total se estrutura estiver errada
 
-        # 2. Penalização proporcional ao excesso de orçamento
+    #     # 2. Penalização proporcional ao excesso de orçamento
+    #     penalty = 0
+    #     for team in self.repr:
+    #         excess = team.total_salary() - MAX_BUDGET
+    #         if excess > 0:
+    #             penalty += excess * 0.5  # podes ajustar este peso
+
+    #     # 3. Métrica de equilíbrio: menor desvio padrão das skills médias entre equipas
+    #     skills = [team.average_skill() for team in self.repr]
+    #     base_score = 1 / (1 + np.std(skills))  # quanto mais equilibradas, melhor
+
+    #     # 4. Fitness final com penalização orçamental
+    #     return max(0.001, base_score - penalty)
+
+    def fitness(self):
+        # Ensure the representation is valid; otherwise, raise an error
+        self._validate_repr(self.repr)  # Let it raise ValueError naturally if invalid (layer of protection)
+
+        # Budget penalty
         penalty = 0
         for team in self.repr:
             excess = team.total_salary() - MAX_BUDGET
             if excess > 0:
-                penalty += excess * 0.5  # podes ajustar este peso
+                penalty += excess * 0.5  # weighted penalty
 
-        # 3. Métrica de equilíbrio: menor desvio padrão das skills médias entre equipas
+        # Balance metric
         skills = [team.average_skill() for team in self.repr]
-        base_score = 1 / (1 + np.std(skills))  # quanto mais equilibradas, melhor
+        base_score = 1 / (1 + np.std(skills))
 
-        # 4. Fitness final com penalização orçamental
         return max(0.001, base_score - penalty)
 
 
+    
 
