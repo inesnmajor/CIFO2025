@@ -191,6 +191,17 @@ class FootballSolution(Solution):
         base_score = 1 / (1 + np.std(skills))
 
         return max(0.001, base_score - penalty)
+    
+    # def get_fingerprint(self):
+    #     return tuple(sorted(player['Name'] for team in self.repr for player in team.players))
+    
+    # def summary(self):
+    #     for i, team in enumerate(self.repr):
+    #         print(f"Team {i+1}")
+    #         for player in team.players:
+    #             print(f"  {player['Name']} | {player['Position']} | Skill: {player['Skill']} | Salary: {player['Salary (€M)']}M")
+
+
 
 
     
