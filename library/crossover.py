@@ -525,7 +525,7 @@ def crossover_blockwise_teams(p1: FootballSolution, p2: FootballSolution) -> Foo
     p1_indices = random.sample(range(N_TEAMS), n_from_p1)
     p2_indices = [i for i in range(N_TEAMS) if i not in p1_indices]
 
-    print(f"\n[DEBUG] Equipas herdadas: {n_from_p1} do p1 → {p1_indices} | {N_TEAMS - n_from_p1} do p2 → {p2_indices}")
+    #print(f"\n[DEBUG] Equipas herdadas: {n_from_p1} do p1 → {p1_indices} | {N_TEAMS - n_from_p1} do p2 → {p2_indices}")
 
     # Herdar equipas do p1
     for i in p1_indices:
@@ -555,7 +555,7 @@ def crossover_blockwise_teams(p1: FootballSolution, p2: FootballSolution) -> Foo
 
         offspring_teams.append(Team(team_players))
 
-    print("[DEBUG] Solução gerada com crossover_blockwise_teams (sem duplicados, estrutura respeitada).")
+    #print("[DEBUG] Solução gerada com crossover_blockwise_teams (sem duplicados, estrutura respeitada).")
     return FootballSolution(offspring_teams, players_df)
 
 

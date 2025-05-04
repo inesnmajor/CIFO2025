@@ -1,5 +1,5 @@
 from library.selection import tournament_selection, fitness_proportionate_selection
-from library.crossover import team_swap_crossover, team_two_point_crossover
+from library.crossover import crossover_blockwise_teams, crossover_position_based
 from library.mutation import mutate_global_position_permutation, mutate_random_position_swap, mutate_swap_between_teams
 from library.classes import FootballSolution, Team
 
@@ -17,8 +17,8 @@ selection_methods = {
 }
 
 crossover_methods = {
-    "team_swap": team_swap_crossover,
-    "team_two_point": team_two_point_crossover
+    "blockwise": crossover_blockwise_teams,
+    "positionbased": crossover_position_based
 }
 
 mutation_methods = {
@@ -55,16 +55,16 @@ def run_ga_test(selection_func, crossover_func, mutation_func,
                 p2 = selection_func(population)
 
                 if random.random() < crossover_prob:
-                    c1, c2 = crossover_func(None, p1, p2)
+                    c1 = crossover_func(p1, p2)
                 else:
-                    c1, c2 = deepcopy(p1), deepcopy(p2)
+                    c1= deepcopy(p1)
 
                 if random.random() < mutation_prob:
                     c1 = mutation_func(None, c1)
-                if random.random() < mutation_prob:
-                    c2 = mutation_func(None, c2)
+                # if random.random() < mutation_prob:
+                #     c2 = mutation_func(None, c2)
 
-                for child in [c1, c2]:
+                for child in [c1]:
                     if len(new_population) < pop_size:
                         new_population.append(child)
 
@@ -98,7 +98,7 @@ for elitism_flag in [True, False]:
                     elitism=elitism_flag,
                     crossover_prob=0.9,
                     mutation_prob=0.1,
-                    print_league_per_gen=True
+    
                 )
 
                 #all_runs is a list of 30 lists, one per run
