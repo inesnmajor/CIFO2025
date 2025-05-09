@@ -63,7 +63,7 @@ results_df = pd.DataFrame()
 
 
 
-for sel_name, sel_func, c_name, c_func, m_name, m_func, ga_runner, elitism_flag in selection_combs:
+for sel_name, sel_func, c_name, c_func, m_name, m_func, ga_runner in selection_combs:
     combination_name = f'{sel_name}|{c_name}|{m_name}|elitism=True'
     print(f"\nRunning {combination_name} ...")
 
