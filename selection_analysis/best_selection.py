@@ -41,21 +41,20 @@ all_xo_mut_combinations = list(product(
     list(crossover_methods_single_child.items()) + list(crossover_methods_two_children.items()),
     mutation_methods.items()
 ))
-xo_mut_comb_sample = random.sample(all_xo_mut_combinations, 8)
+xo_mut_comb_sample = random.sample(all_xo_mut_combinations, 6)
 
 selection_combs = []
 for sel_name, sel_func in selection_methods.items():
     for (c_name, c_func), (m_name, m_func) in xo_mut_comb_sample:
         ga_runner = run_ga_test_two_children if "2child" in c_name else run_ga_test_single_child
-        for elitism_flag in [True, False]:
-            selection_combs.append((sel_name, sel_func, c_name, c_func, m_name, m_func, ga_runner, elitism_flag))
+        selection_combs.append((sel_name, sel_func, c_name, c_func, m_name, m_func, ga_runner))
 
 
 
 # Parametrizações gerais
-generations = 10
-pop_size = 15
-n_runs = 10
+generations = 100
+pop_size = 40
+n_runs = 30
 crossover_prob = 0.9
 mutation_prob = 0.1
 
@@ -65,7 +64,7 @@ results_df = pd.DataFrame()
 
 
 for sel_name, sel_func, c_name, c_func, m_name, m_func, ga_runner, elitism_flag in selection_combs:
-    combination_name = f'{sel_name}|{c_name}|{m_name}|elitism={elitism_flag}'
+    combination_name = f'{sel_name}|{c_name}|{m_name}|elitism=True'
     print(f"\nRunning {combination_name} ...")
 
     all_runs = ga_runner(
@@ -73,7 +72,7 @@ for sel_name, sel_func, c_name, c_func, m_name, m_func, ga_runner, elitism_flag 
         generations=generations,
         pop_size=pop_size,
         n_runs=n_runs,
-        elitism=elitism_flag,
+        elitism=True,
         crossover_prob=crossover_prob,
         mutation_prob=mutation_prob
     )
@@ -82,8 +81,8 @@ for sel_name, sel_func, c_name, c_func, m_name, m_func, ga_runner, elitism_flag 
     results_df[combination_name] = medians
 
 # Save results
-results_df.to_csv('ga_selection_analysis2.csv')
-print("\nResultados salvos em 'ga_selection_analysis2.csv'")
+results_df.to_csv('ga_selection_analysis.csv')
+print("\nResultados salvos em 'ga_selection_analysis.csv'")
 
 
 
