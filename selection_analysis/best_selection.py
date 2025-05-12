@@ -15,7 +15,7 @@ import pandas as pd
 from itertools import product
 
 
-# Definir métodos disponíveis
+# ------------------ Operators ------------------ #
 selection_methods = {
     "tournament": tournament_selection,
     "fitness_proportionate": fitness_proportionate_selection
@@ -37,6 +37,7 @@ mutation_methods = {
     "between_teams": mutate_swap_between_teams
 }
 
+# ------------------ Combinations ------------------ #
 all_xo_mut_combinations = list(product(
     list(crossover_methods_single_child.items()) + list(crossover_methods_two_children.items()),
     mutation_methods.items()
@@ -51,7 +52,7 @@ for sel_name, sel_func in selection_methods.items():
 
 
 
-# Parametrizações gerais
+# ------------------ Fixed Parameters ------------------ #
 generations = 100
 pop_size = 40
 n_runs = 30
@@ -62,7 +63,7 @@ mutation_prob = 0.1
 results_df = pd.DataFrame()
 
 
-
+# ------------------ Grid Search ------------------ #
 for sel_name, sel_func, c_name, c_func, m_name, m_func, ga_runner in selection_combs:
     combination_name = f'{sel_name}|{c_name}|{m_name}|elitism=True'
     print(f"\nRunning {combination_name} ...")
@@ -80,7 +81,7 @@ for sel_name, sel_func, c_name, c_func, m_name, m_func, ga_runner in selection_c
     medians = np.median(np.transpose(all_runs), axis=1)
     results_df[combination_name] = medians
 
-# Save results
+# ------------------ Results ------------------ #
 results_df.to_csv('ga_selection_analysis.csv')
 print("\nResultados salvos em 'ga_selection_analysis.csv'")
 

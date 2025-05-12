@@ -8,7 +8,7 @@ from library.crossover2child import crossover_blockwise_teams_two_offspring, cro
 from library.mutation import mutate_global_position_permutation, mutate_random_position_swap, mutate_swap_between_teams
 from library.GA import run_ga_test_single_child, run_ga_test_two_children
 
-# ------------------ Configurações fixas ------------------ #
+# ------------------ Fixed Parameters ------------------ #
 SELECTION_METHOD = tournament_selection
 CROSSOVER_PROB = 0.9
 MUTATION_PROB = 0.1
@@ -16,7 +16,7 @@ GENERATIONS = 100
 POP_SIZE = 40
 N_RUNS = 30
 
-# ------------------ Operadores disponíveis ------------------ #
+# ------------------ Operators ------------------ #
 crossover_methods = {
     "blockwise": (crossover_blockwise_teams, run_ga_test_single_child),
     "positionbased": (crossover_position_based, run_ga_test_single_child),
@@ -32,10 +32,10 @@ mutation_methods = {
 
 elitism_options = [True, False]
 
-# ------------------ Gerar combinações ------------------ #
+# ------------------ Combinations ------------------ #
 search_space = list(product(crossover_methods.items(), mutation_methods.items(), elitism_options))
 
-# ------------------ Executar Grid Search ------------------ #
+# ------------------ Grid Search ------------------ #
 results_df = pd.DataFrame()
 
 for (c_name, (c_func, ga_runner)), (m_name, m_func), elitism in search_space:
@@ -55,6 +55,6 @@ for (c_name, (c_func, ga_runner)), (m_name, m_func), elitism in search_space:
     medians = np.median(np.transpose(all_runs), axis=1)
     results_df[combination_label] = medians
 
-# ------------------ Guardar resultados ------------------ #
+# ------------------ Results ------------------ #
 results_df.to_csv('ga_grid_search_results.csv', quoting=csv.QUOTE_NONNUMERIC, index=False)
 print("\nResultados salvos em 'ga_grid_search_results.csv'")

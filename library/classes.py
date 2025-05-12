@@ -59,8 +59,6 @@ class Team:
             total_cost += player['Salary (€M)'] #and sums their salary
         if any(pos_count[p] != TEAM_STRUCTURE[p] for p in POSITIONS):
             return False  #if any pos doesn't have exacly the right nº of players, its invalid
-        # if total_cost > MAX_BUDGET:
-        #     return False  #if exceeds the budget, its false
         return True
 
     def average_skill(self):
@@ -120,7 +118,7 @@ class FootballSolution(Solution):
         while len(teams) < N_TEAMS:
             try:
                 team_players = []
-                # for each required position, select the needed number of available players
+                #for each required position, select the needed number of available players
                 for pos, count in TEAM_STRUCTURE.items():
                     #only not used players
                     available = [p for p in by_position[pos] if p['Name'] not in used_names]
