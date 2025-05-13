@@ -8,7 +8,7 @@ import pandas as pd
 
 def run_ga_test_single_child(selection_func, crossover_func, mutation_func,
                              generations=100, pop_size=40, elitism=True, n_runs=30,
-                             crossover_prob=0.9, mutation_prob=0.3):
+                             crossover_prob=0.9, mutation_prob=0.1):
     """
     Runs a GA test assuming crossover produces a single child.
     """
@@ -55,7 +55,7 @@ def run_ga_test_single_child(selection_func, crossover_func, mutation_func,
 
 def run_ga_test_two_children(selection_func, crossover_func, mutation_func,
                              generations=100, pop_size=40, elitism=True, n_runs=30,
-                             crossover_prob=0.9, mutation_prob=0.3):
+                             crossover_prob=0.9, mutation_prob=0.1):
     """
     Runs a GA test assuming crossover produces two children.
     """

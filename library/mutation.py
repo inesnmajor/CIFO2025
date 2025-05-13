@@ -53,11 +53,11 @@ def mutate_swap_between_teams(self, solution):
 
 '''
 This mutation operator randomly selects a player position and performs a global permutation of 
-all players with that position across teams. 
+all players with that position across teams except the GK. 
 It ensures that exactly two players of that position are reassigned per team. The mutation is only applied if all teams 
 remain valid and the new solution is unique. Otherwise, the original solution is returned.
 '''
-    
+#POR GK   
 def mutate_global_position_permutation(self, solution):
     from copy import deepcopy
     

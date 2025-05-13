@@ -1,5 +1,5 @@
 from library.classes import FootballSolution
-#from library.crossover import crossover_teamwise_mix_and_repair,crossover_position_based, crossover_blockwise_teams_explained, crossover_position_based_explained
+from library.crossover import crossover_teamwise_mix_and_repair,crossover_position_based, crossover_blockwise_teams_explained, crossover_position_based_explained
 from library.mutation import mutate_swap_between_teams  # escolhe a tua mutação
 from library.selection import tournament_selection
 from library.crossover2child import crossover_position_based_explained_two_offspring, crossover_position_based_two_offspring, crossover_blockwise_teams_explained_two_offspring,crossover_blockwise_teams_two_offspring
@@ -30,21 +30,21 @@ for gen in range(N_GENERATIONS):
         parent2 = tournament_selection(population, k=3)
 
         # Crossover - GERA DOIS FILHOS
-        child1, child2 = crossover_blockwise_teams_two_offspring(parent1, parent2)
-
+        #child1, child2 = crossover_blockwise_teams_two_offspring(parent1, parent2)
+        child1= crossover_blockwise_teams_explained(parent1,parent2)
         # Mutação no filho 1
         if random.random() < MUTATION_RATE:
             child1 = mutate_swap_between_teams(None, child1)
 
         # Mutação no filho 2
-        if random.random() < MUTATION_RATE:
-            child2 = mutate_swap_between_teams(None, child2)
+        # if random.random() < MUTATION_RATE:
+        #     child2 = mutate_swap_between_teams(None, child2)
 
         # Adiciona os filhos se houver espaço
         if len(new_population) < POP_SIZE:
             new_population.append(child1)
-        if len(new_population) < POP_SIZE:
-            new_population.append(child2)
+        # if len(new_population) < POP_SIZE:
+        #     new_population.append(child2)
 
     population = new_population
     best_fitness = max(ind.fitness() for ind in population)

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import csv
+import json
 from itertools import product
 from library.selection import tournament_selection
 from library.crossover import crossover_blockwise_teams, crossover_position_based
@@ -15,6 +16,8 @@ MUTATION_PROB = 0.1
 GENERATIONS = 100
 POP_SIZE = 40
 N_RUNS = 30
+
+
 
 # ------------------ Operators ------------------ #
 crossover_methods = {
@@ -42,6 +45,7 @@ for (c_name, (c_func, ga_runner)), (m_name, m_func), elitism in search_space:
     combination_label = f'{c_name}|{m_name}|elitism_{elitism}'
     print(f"\nRunning {combination_label} ...")
 
+    # Executar N_RUNS execuções para a combinação atual
     all_runs = ga_runner(
         SELECTION_METHOD, c_func, m_func,
         generations=GENERATIONS,
@@ -52,9 +56,18 @@ for (c_name, (c_func, ga_runner)), (m_name, m_func), elitism in search_space:
         mutation_prob=MUTATION_PROB
     )
 
-    medians = np.median(np.transpose(all_runs), axis=1)
-    results_df[combination_label] = medians
+    
+    all_runs_transposed = np.transpose(all_runs)
 
-# ------------------ Results ------------------ #
-results_df.to_csv('ga_grid_search_results.csv', quoting=csv.QUOTE_NONNUMERIC, index=False)
-print("\nResultados salvos em 'ga_grid_search_results.csv'")
+    # cerate lists of lists for each gen
+    generation_results = [list(gen_values) for gen_values in all_runs_transposed]
+
+    
+    results_df[combination_label] = generation_results
+
+results_df = results_df.applymap(lambda x: json.dumps(x) if isinstance(x, list) else x)
+
+# ------------------ Save Results ------------------ #
+results_df.to_csv('ga_grid_search_resultsTESTES.csv', quoting=csv.QUOTE_NONNUMERIC, index=False)
+print("\nResults saved 'ga_grid_search_results.csv'")
+

@@ -27,14 +27,14 @@ class Team:
     def __init__(self, players):
         self.players = players
 
-    def __str__(self):
-        header = f"{'Player':<20} {'Position':<10} {'Skill':<6} {'Salary (€M)':<10}"
-        lines = [header, "-" * len(header)]
-        for p in self.players:
-            line = f"{p['Name']:<20} {p['Position']:<10} {p['Skill']:<6.1f} {p['Salary (€M)']:<10.1f}"
-            lines.append(line)
-        summary = f"\nAverage Skill: {self.average_skill():.2f} | Total Salary: {self.total_salary():.2f}M | Valid: {self.is_valid()}"
-        return "\n".join(lines) + summary
+    # def __str__(self):
+    #     header = f"{'Player':<20} {'Position':<10} {'Skill':<6} {'Salary (€M)':<10}"
+    #     lines = [header, "-" * len(header)]
+    #     for p in self.players:
+    #         line = f"{p['Name']:<20} {p['Position']:<10} {p['Skill']:<6.1f} {p['Salary (€M)']:<10.1f}"
+    #         lines.append(line)
+    #     summary = f"\nAverage Skill: {self.average_skill():.2f} | Total Salary: {self.total_salary():.2f}M | Valid: {self.is_valid()}"
+    #     return "\n".join(lines) + summary
 
     def __repr__(self):
         header = f"{'Player':<20} {'Position':<10} {'Skill':<6} {'Salary (€M)':<10}"
@@ -53,10 +53,10 @@ class Team:
     
     def is_valid(self):
         pos_count = {p: 0 for p in POSITIONS} #count players in each pos (start w/ 0)
-        total_cost = 0
+        #total_cost = 0
         for player in self.players:
             pos_count[player['Position']] += 1 #when a player is seen sums to the count
-            total_cost += player['Salary (€M)'] #and sums their salary
+            #total_cost += player['Salary (€M)'] #and sums their salary
         if any(pos_count[p] != TEAM_STRUCTURE[p] for p in POSITIONS):
             return False  #if any pos doesn't have exacly the right nº of players, its invalid
         return True
@@ -96,7 +96,7 @@ class FootballSolution(Solution):
             if not isinstance(team, Team):
                 raise TypeError("Each element in the representation must be a Team")
             if not team.is_valid():
-                raise ValueError("Each team must be valid (positions + budget)")
+                raise ValueError("Each team must be valid (positions and structure)")
 
     
     def random_initial_representation(self):
@@ -123,7 +123,7 @@ class FootballSolution(Solution):
                     #only not used players
                     available = [p for p in by_position[pos] if p['Name'] not in used_names]
                     if len(available) < count:
-                        raise ValueError(f"Not enough players left for position: {pos}")
+                        raise ValueError(f"Not enough players left for position: {pos}") #extra verification
                     team_players.extend(random.sample(available, count))
 
                 team = Team(team_players)

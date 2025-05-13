@@ -83,7 +83,7 @@ for sel_name, sel_func, c_name, c_func, m_name, m_func, ga_runner in selection_c
 
 # ------------------ Results ------------------ #
 results_df.to_csv('ga_selection_analysis.csv')
-print("\nResultados salvos em 'ga_selection_analysis.csv'")
+print("\nResults saved 'ga_selection_analysis.csv'")
 
 
 
