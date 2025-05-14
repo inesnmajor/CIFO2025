@@ -27,15 +27,6 @@ class Team:
     def __init__(self, players):
         self.players = players
 
-    # def __str__(self):
-    #     header = f"{'Player':<20} {'Position':<10} {'Skill':<6} {'Salary (€M)':<10}"
-    #     lines = [header, "-" * len(header)]
-    #     for p in self.players:
-    #         line = f"{p['Name']:<20} {p['Position']:<10} {p['Skill']:<6.1f} {p['Salary (€M)']:<10.1f}"
-    #         lines.append(line)
-    #     summary = f"\nAverage Skill: {self.average_skill():.2f} | Total Salary: {self.total_salary():.2f}M | Valid: {self.is_valid()}"
-    #     return "\n".join(lines) + summary
-
     def __repr__(self):
         header = f"{'Player':<20} {'Position':<10} {'Skill':<6} {'Salary (€M)':<10}"
         lines = [header, "-" * len(header)]
@@ -139,67 +130,23 @@ class FootballSolution(Solution):
 
         return teams
 
-
-    # def fitness(self):
-    #     if not all(len(team.players) == TEAM_SIZE and
-    #             sum(1 for p in team.players if p['Position'] == pos) == TEAM_STRUCTURE[pos]
-    #             for team in self.repr for pos in POSITIONS):
-    #         return 0  # structural invalidity
-
-    #     if any(team.total_salary() > MAX_BUDGET for team in self.repr):
-    #         return 0.001  # hard penalty for budget violations
-
-    #     skills = [team.average_skill() for team in self.repr]
-    #     return 1 / (1 + np.std(skills))
-
-    # def fitness(self):
-    # # 1. Verificar se todas as equipas têm estrutura correta
-    #     if not all(len(team.players) == TEAM_SIZE and
-    #             sum(1 for p in team.players if p['Position'] == pos) == TEAM_STRUCTURE[pos]
-    #             for team in self.repr for pos in POSITIONS):
-    #         return 0  # penalização total se estrutura estiver errada
-
-    #     # 2. Penalização proporcional ao excesso de orçamento
-    #     penalty = 0
-    #     for team in self.repr:
-    #         excess = team.total_salary() - MAX_BUDGET
-    #         if excess > 0:
-    #             penalty += excess * 0.5  # podes ajustar este peso
-
-    #     # 3. Métrica de equilíbrio: menor desvio padrão das skills médias entre equipas
-    #     skills = [team.average_skill() for team in self.repr]
-    #     base_score = 1 / (1 + np.std(skills))  # quanto mais equilibradas, melhor
-
-    #     # 4. Fitness final com penalização orçamental
-    #     return max(0.001, base_score - penalty)
-
     def fitness(self):
-        # Ensure the representation is valid; otherwise, raise an error
+        #ensure the representation is valid; otherwise, raise an error
         self._validate_repr(self.repr)  # Let it raise ValueError naturally if invalid (layer of protection)
 
-        # Budget penalty
+        #budget penalty
         penalty = 0
         for team in self.repr:
             excess = team.total_salary() - MAX_BUDGET
             if excess > 0:
                 penalty += excess * 0.5  # weighted penalty
 
-        # Balance metric
+        #balance metric
         skills = [team.average_skill() for team in self.repr]
         base_score = 1 / (1 + np.std(skills))
 
         return max(0.001, base_score - penalty)
     
-    # def get_fingerprint(self):
-    #     return tuple(sorted(player['Name'] for team in self.repr for player in team.players))
-    
-    # def summary(self):
-    #     for i, team in enumerate(self.repr):
-    #         print(f"Team {i+1}")
-    #         for player in team.players:
-    #             print(f"  {player['Name']} | {player['Position']} | Skill: {player['Skill']} | Salary: {player['Salary (€M)']}M")
-
-
 
 
     
