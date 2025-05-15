@@ -1,0 +1,113 @@
+=== League Overview ===
+
+===== FootballSolution =====
+
+--- Team 1 ---
+Daniel Foster             | DEF | Skill: 90.0  | €110.0 M
+Tyler Jenkins             | FWD | Skill: 80.0  | €70.0  M
+Chris Thompson            | GK  | Skill: 80.0  | €80.0  M
+Logan Brooks              | DEF | Skill: 86.0  | €95.0  M
+Nathan Wright             | MID | Skill: 92.0  | €120.0 M
+Austin Torres             | MID | Skill: 82.0  | €80.0  M
+Sebastian Perry           | FWD | Skill: 95.0  | €150.0 M
+
+--- Team 2 ---
+Jordan Smith              | GK  | Skill: 88.0  | €100.0 M
+Maxwell Flores            | DEF | Skill: 81.0  | €72.0  M
+Lucas Bennett             | DEF | Skill: 85.0  | €90.0  M
+Spencer Ward              | MID | Skill: 84.0  | €85.0  M
+Dominic Bell              | MID | Skill: 86.0  | €95.0  M
+Xavier Bryant             | FWD | Skill: 90.0  | €120.0 M
+Colton Gray               | FWD | Skill: 91.0  | €125.0 M
+
+--- Team 3 ---
+Jaxon Griffin             | DEF | Skill: 79.0  | €65.0  M
+Landon Powell             | FWD | Skill: 89.0  | €110.0 M
+Ryan Mitchell             | GK  | Skill: 83.0  | €85.0  M
+Owen Parker               | DEF | Skill: 88.0  | €100.0 M
+Ashton Phillips           | MID | Skill: 90.0  | €110.0 M
+Hunter Cooper             | MID | Skill: 83.0  | €85.0  M
+Julian Scott              | FWD | Skill: 92.0  | €130.0 M
+
+--- Team 4 ---
+Alex Carter               | GK  | Skill: 85.0  | €90.0  M
+Ethan Howard              | DEF | Skill: 80.0  | €70.0  M
+Brayden Hughes            | DEF | Skill: 87.0  | €100.0 M
+Gavin Richardson          | MID | Skill: 87.0  | €95.0  M
+Bentley Rivera            | MID | Skill: 88.0  | €100.0 M
+Elijah Sanders            | FWD | Skill: 93.0  | €140.0 M
+Adrian Collins            | FWD | Skill: 85.0  | €90.0  M
+
+--- Team 5 ---
+Blake Henderson           | GK  | Skill: 87.0  | €95.0  M
+Caleb Fisher              | DEF | Skill: 84.0  | €85.0  M
+Mason Reed                | DEF | Skill: 82.0  | €75.0  M
+Connor Hayes              | MID | Skill: 89.0  | €105.0 M
+Dylan Morgan              | MID | Skill: 91.0  | €115.0 M
+Zachary Nelson            | FWD | Skill: 86.0  | €92.0  M
+Chase Murphy              | FWD | Skill: 86.0  | €95.0  M
+
+Fitness: 0.9459
+
+
+=== Individual Teams ===
+
+Team 1:
+Player               Position   Skill  Salary (€M)
+--------------------------------------------------
+Daniel Foster        DEF        90.0   110.0     
+Tyler Jenkins        FWD        80.0   70.0      
+Chris Thompson       GK         80.0   80.0      
+Logan Brooks         DEF        86.0   95.0      
+Nathan Wright        MID        92.0   120.0     
+Austin Torres        MID        82.0   80.0      
+Sebastian Perry      FWD        95.0   150.0     
+Average Skill: 86.43 | Total Salary: 705.00M | Valid: True
+
+Team 2:
+Player               Position   Skill  Salary (€M)
+--------------------------------------------------
+Jordan Smith         GK         88.0   100.0     
+Maxwell Flores       DEF        81.0   72.0      
+Lucas Bennett        DEF        85.0   90.0      
+Spencer Ward         MID        84.0   85.0      
+Dominic Bell         MID        86.0   95.0      
+Xavier Bryant        FWD        90.0   120.0     
+Colton Gray          FWD        91.0   125.0     
+Average Skill: 86.43 | Total Salary: 687.00M | Valid: True
+
+Team 3:
+Player               Position   Skill  Salary (€M)
+--------------------------------------------------
+Jaxon Griffin        DEF        79.0   65.0      
+Landon Powell        FWD        89.0   110.0     
+Ryan Mitchell        GK         83.0   85.0      
+Owen Parker          DEF        88.0   100.0     
+Ashton Phillips      MID        90.0   110.0     
+Hunter Cooper        MID        83.0   85.0      
+Julian Scott         FWD        92.0   130.0     
+Average Skill: 86.29 | Total Salary: 685.00M | Valid: True
+
+Team 4:
+Player               Position   Skill  Salary (€M)
+--------------------------------------------------
+Alex Carter          GK         85.0   90.0      
+Ethan Howard         DEF        80.0   70.0      
+Brayden Hughes       DEF        87.0   100.0     
+Gavin Richardson     MID        87.0   95.0      
+Bentley Rivera       MID        88.0   100.0     
+Elijah Sanders       FWD        93.0   140.0     
+Adrian Collins       FWD        85.0   90.0      
+Average Skill: 86.43 | Total Salary: 685.00M | Valid: True
+
+Team 5:
+Player               Position   Skill  Salary (€M)
+--------------------------------------------------
+Blake Henderson      GK         87.0   95.0      
+Caleb Fisher         DEF        84.0   85.0      
+Mason Reed           DEF        82.0   75.0      
+Connor Hayes         MID        89.0   105.0     
+Dylan Morgan         MID        91.0   115.0     
+Zachary Nelson       FWD        86.0   92.0      
+Chase Murphy         FWD        86.0   95.0      
+Average Skill: 86.43 | Total Salary: 662.00M | Valid: True
