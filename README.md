@@ -20,10 +20,12 @@ CIFO2025/
 │   └── selection.py           # 2 selection mechanisms
 ├── mut_cross_analysis/        # Mutation & crossover analysis
 │   ├── analysis.ipynb         # Jupyter notebook: operator comparison experiments
-│   └── mut_cross.py           # Script to reproduce analysis
+│   ├── mut_cross.py           # Script to reproduce analysis
+│   └── ga_grid_search_results.csv # Results of the grid search
 ├── selection_analysis/        # Selection mechanism analysis
 │   ├── selection_analysis.ipynb  # Notebook: selection experiments
-│   └── ga_selection_analysis.py  # Script to reproduce analysis
+│   ├── ga_selection_analysis.py  # Script to reproduce analysis
+│   └──ga_selection_analysis.csv # Results of the selection grid search
 ├── best_league.py             # Script: run GA and output best league configuration
 ├── CIFO_2024_2025_Project_Statement.pdf  # Project requirements & guidelines
 └── README.md 
@@ -90,11 +92,11 @@ Evaluate tournament vs. roulette-wheel selection.
 
 **GA.py** - Implements the GA workflow: selection → crossover → mutation → replacement.
 
-**mutation.py** - Contains at least three problem-adapted mutation operators (e.g., swap, reassign, scramble).
+**mutation.py** - Contains at least three problem-adapted mutation operators.
 
-**crossover.py & crossover2child.py** - Two distinct crossover strategies for mixing parent league configurations.
+**crossover.py & crossover2child.py** - Two distinct crossover strategies.
 
-**selection.py** - Includes tournament selection, roulette-wheel selection, and any additional methods.
+**selection.py** - Includes tournament selection, roulette-wheel selection.
 
 5. **Results**
 
