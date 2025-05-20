@@ -134,7 +134,7 @@ def mutate_random_position_swap(self, solution):
 #this function is another layer of protection from players being the same in various teams, just to be safe
 def is_unique(solution):
     all_names = [p['Name'] for team in solution.repr for p in team.players]
-    return len(all_names) == len(set(all_names))
+    return len(all_names) == len(set(all_names)) #garantees a players doesnt show up in more than one team
 
 
 

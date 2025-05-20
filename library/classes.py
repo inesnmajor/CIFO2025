@@ -47,7 +47,6 @@ class Team:
         #total_cost = 0
         for player in self.players:
             pos_count[player['Position']] += 1 #when a player is seen sums to the count
-            #total_cost += player['Salary (€M)'] #and sums their salary
         if any(pos_count[p] != TEAM_STRUCTURE[p] for p in POSITIONS):
             return False  #if any pos doesn't have exacly the right nº of players, its invalid
         return True
@@ -77,7 +76,7 @@ class FootballSolution(Solution):
         return summary
 
 
-    #this validates that the solution(5 instances of the class Team) is valid 
+    #this validates that the solution
     def _validate_repr(self, repr):
         if not isinstance(repr, list):
             raise TypeError("Representation must be a list of Team objects")
@@ -132,7 +131,7 @@ class FootballSolution(Solution):
 
     def fitness(self):
         #ensure the representation is valid; otherwise, raise an error
-        self._validate_repr(self.repr)  # Let it raise ValueError naturally if invalid (layer of protection)
+        self._validate_repr(self.repr)  #let it raise ValueError naturally if invalid (layer of protection)
 
         #budget penalty
         penalty = 0

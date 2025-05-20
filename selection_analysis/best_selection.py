@@ -42,7 +42,7 @@ all_xo_mut_combinations = list(product(
     list(crossover_methods_single_child.items()) + list(crossover_methods_two_children.items()),
     mutation_methods.items()
 ))
-xo_mut_comb_sample = random.sample(all_xo_mut_combinations, 6)
+xo_mut_comb_sample = random.sample(all_xo_mut_combinations, 6) #decided to go with only 6 to run in an effective time
 
 selection_combs = []
 for sel_name, sel_func in selection_methods.items():

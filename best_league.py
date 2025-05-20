@@ -84,11 +84,11 @@ def save_solution_to_file(solution, filepath="best_league.txt"):
         f.write("=== League Overview ===\n")
         f.write(str(solution) + "\n\n")
 
-        # Write each team individually using its __repr__
+        # Write each team individually 
         f.write("=== Individual Teams ===\n")
         for team_idx, team in enumerate(solution.repr, start=1):
             f.write(f"\nTeam {team_idx}:\n")
-            f.write(str(team) + "\n")  # This assumes your Team class has __repr__ or __str__
+            f.write(str(team) + "\n") 
 
     print(f"Solution with league and team details saved to {filepath}")
 
