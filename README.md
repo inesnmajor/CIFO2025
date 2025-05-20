@@ -25,7 +25,7 @@ CIFO2025/
 ├── selection_analysis/        # Selection mechanism analysis
 │   ├── selection_analysis.ipynb  # Notebook: selection experiments
 │   ├── ga_selection_analysis.py  # Script to reproduce analysis
-│   └──ga_selection_analysis.csv # Results of the selection grid search
+│   └── ga_selection_analysis.csv # Results of the selection grid search
 ├── best_league.py             # Script: run GA and output best league configuration
 ├── CIFO_2024_2025_Project_Statement.pdf  # Project requirements & guidelines
 └── README.md 
