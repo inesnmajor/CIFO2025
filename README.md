@@ -56,7 +56,9 @@ Crossover & mutation rates
 Salary cap (default: €750 M per team)
 
 3. **Run the Genetic Algorithm for best league**
+``` python
     python best_league.py
+```
 
 This will:
 
@@ -84,15 +86,15 @@ Evaluate tournament vs. roulette-wheel selection.
 
 5. **Code Modules**
 
-classes.py - Defines Player, Team and League classes, plus fitness evaluation (team skill SD + salary cap penalty).
+**classes.py** - Defines Player, Team and League classes, plus fitness evaluation (team skill SD + salary cap penalty).
 
-GA.py - Implements the GA workflow: selection → crossover → mutation → replacement.
+**GA.py** - Implements the GA workflow: selection → crossover → mutation → replacement.
 
-mutation.py - Contains at least three problem-adapted mutation operators (e.g., swap, reassign, scramble).
+**mutation.py** - Contains at least three problem-adapted mutation operators (e.g., swap, reassign, scramble).
 
-crossover.py & crossover2child.py - Two distinct crossover strategies for mixing parent league configurations.
+**crossover.py & crossover2child.py** - Two distinct crossover strategies for mixing parent league configurations.
 
-selection.py - Includes tournament selection, roulette-wheel selection, and any additional methods.
+**selection.py** - Includes tournament selection, roulette-wheel selection, and any additional methods.
 
 5. **Results**
 
